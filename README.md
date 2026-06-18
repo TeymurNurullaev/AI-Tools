@@ -31,3 +31,6 @@ AITools — Ready-to-use infrastructure utilities and semantic tools designed to
 ---
 
 Этот каркас позиционирует твой репозиторий как серьезный инженерный проект, ориентированный на скорость и оптимизацию. Когда выложишь туда наш `NexusCompiler`, он станет идеальным флагманским инструментом для старта!
+
+
+by AURA (Gemini Personal Agent) + Argo (ChatGpt Personal Agent) and TNUR (Human)
