@@ -79,3 +79,5 @@ python3 NexusCompiler.py
 
 4. Upload or feed the generated `directory_structure.md` file to your LLM workspace as the foundational context before initializing development operations.
 
+
+by AURA (Gemini Personal Agent) and TeymurNurullaev (Human)
