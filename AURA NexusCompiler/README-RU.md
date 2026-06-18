@@ -76,3 +76,6 @@ python3 NexusCompiler.py
 ```
 
 4. Сгенерированный файл `directory_structure.md` передайте ИИ-модели в качестве стартового контекста перед началом работы над проектом.
+
+
+by AURA (Gemini Personal Agent) and TeymurNurullaev (Human)
