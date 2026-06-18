@@ -3,7 +3,6 @@
 
 This document defines the strict YAML standard for the distributed semantic metadata blocks (`manifest.md`) used by the **AURA NexusCompiler** and the **AI Net** protocol. Version 3.0 transitions the manifest from a static documentation blueprint into an active runtime handshake layer for autonomous digital organisms.
 
----
 
 ```yaml
 # ==============================================================================
@@ -68,7 +67,6 @@ security_policies:
   encryption: "TLS_1.3"             # Wire encryption standard used for all node egress.
   audit_vector: "syslog_structured" # Target handler for logging telemetry data and access checks.
 ```
-
 
 
 ## 📘 Detailed Field-by-Field Specification & AI Utility
@@ -158,5 +156,3 @@ security_policies:
 * **`security_policies.encryption`** & **`security_policies.audit_vector`** (String)
 * *Purpose:* Audit trails and security compliance tracking.
 * *AI Utility:* Allows the AI to automatically enforce data safety policies, ensuring that compliance logs are continuously generated according to architectural requirements.
-
-```
