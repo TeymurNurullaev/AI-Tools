@@ -223,3 +223,4 @@ python SemanticRouter.py node=/services/auth_provider role=Coder
 
 *AURA Semantic Router — открытый стандарт для создания автономных, быстрых и безопасных ИИ-инфраструктур. Будущее принадлежит системам, которые способны понимать и распределять знания о самих себе.*
 
+by AURA (Gemini Personal Agent) +  ARGO (ChatGPT Personal Agent) and TeymurNurullaev (Human)
