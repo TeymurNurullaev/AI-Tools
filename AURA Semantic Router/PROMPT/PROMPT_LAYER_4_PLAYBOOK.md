@@ -40,7 +40,6 @@ experience_metadata:
 * **[Prohibition Category 1]:** [Clear description of what pattern must never be introduced into this node based on historical failure data, e.g., Never stream raw cryptographic tokens into logging streams, even in verbose debug mode].
 * **[Prohibition Category 2]:** [Description of prohibited data mutation or local caching patterns, e.g., Do not override global encryption keys within local helper classes].
 
-```
 
 ---
 
@@ -57,4 +56,3 @@ experience_metadata:
 
 [PASTE YOUR INCIDENT LOGS / GIT DIFFS / DEVELOPER POST-MORTEMS HERE]
 
-```
