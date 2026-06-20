@@ -68,29 +68,122 @@
 
 ```yaml
 # manifest.md
-identity:
-  node: "/services/auth_provider"
-  type: "system_core"
-  subsystem: "Security & Gateways"
-  version: "2026.1.0"
-  criticality: "mission_critical"
 
+# --- БЛОК 1: ФУНДАМЕНТ ИДЕНТИФИКАЦИИ И КООРДИНАЦИИ ---
+identity:
+  node: "/Context/Assembly"         # Целевой относительный или глобальный URI узла системы.
+  type: "memory_layer"               # Архетип узла. Допустимо: [root_manifest, system_core, memory_layer, gateway_router, execution_agent, data_sink]
+  subsystem: "Context Assembly"     # Человеко- и машиночитаемое имя функционального блока.
+  version: "2026.3.1"                # Версия на основе SemVer или эпохи, отслеживающая состояние этого узла.
+  stability_layer: "stable"          # Операционная зрелость. Допустимо: [experimental, active, stable, legacy]
+  criticality: "mission_critical"    # Системная важность. Допустимо: [low, medium, high, mission_critical]
+
+# --- БЛОК 2: АРХИТЕКТУРНЫЕ СВЯЗИ СИСТЕМЫ ---
 architecture_relations:
-  data_stores:
-    - target: "users_credential_db"
-      access: "read_only"
-      purpose: "Проверка хэшей паролей и токенов доступа."
+  db_relations:
+    - table: "ai_sessions"
+      mode: "write/read"            # Вектор доступа. Допустимо: [read_only, write_only, write/read]
+      purpose: "Логирует и синхронизирует интерактивные матрицы контекста пользователя и токены выполнения."
+    - table: "company_registry"
+      mode: "read_only"
+      purpose: "Валидирует заголовки входящего трафика на соответствие зарегистрированным корпоративным криптографическим ключам."
   
   external_connections:
-    - service: "OAuth2_Provider"
-      protocol: "HTTPS/REST"
-      purpose: "Валидация внешних сессий пользователей."
+    - system: "Qdrant Vector DB"
+      protocol: "gRPC"              # Протокол транспортного уровня: [gRPC, HTTPS/REST, WebSockets, MQTT, Redis-RESP]
+      endpoint: "vector-cluster:6334"
+      purpose: "Извлечение глубоких слоев семантических знаний и ассоциативных весов."
 
+# --- БЛОК 3: МАТРИЦЫ ЖЕСТКИХ И МЯГКИХ ЗАВИСИМОСТЕЙ ---
 dependencies:
-  upstream:
-    - node: "/gateway/ingress_router"
-      type: "hard"
+  upstream:                         # Что требуется этому узлу для успешного запуска (Входящие зависимости)
+    - node: "/BDGSite"
+      type: "hard"                  # Жесткая связь. Если этот узел дает сбой или отсутствует, текущий узел умирает.
+      purpose: "Требуются предварительно смашрутизированные, валидированные пакеты транзакций с извлеченными ключами компании."
+  downstream:                       # Узлы, которые напрямую зависят от этого узла (Исходящие зависимости)
+    - node: "/Worker/Consultant"
+      type: "soft"                  # Мягкая связь. Может работать с ограниченной функциональностью в случае отсутствия.
+      purpose: "Потребляет скомпилированные массивы контекста для выполнения лингвистических конвейеров агентов."
 
+# --- БЛОК 4: ИНТЕРФЕЙСНЫЕ КОНТРАКТЫ ДАННЫХ (Новое в v3.1) ---
+interface_contracts:
+  input:
+    - name: "compiled_task"
+      format: "json"
+      required: true
+      source: "/BDGSite"
+      purpose: "Получение валидированных пакетов задач после пре-роутинга и извлечения company_key."
+    - name: "user_context"
+      format: "json"
+      required: false
+      source: "/Session"
+      purpose: "Опциональный контекст пользователя/сессии для обогащения собираемой матрицы."
+  output:
+    - name: "context_package"
+      format: "json"
+      consumer: "/Worker/Consultant"
+      purpose: "Предоставление собранного семантического контекста для исполнительных ИИ-агентов."
+
+# --- БЛОК 5: ПРОФИЛИ РЕСУРСОВ И ОГРАНИЧЕНИЯ ---
+resource_profiles:
+  load_expectations:
+    target_rps: "250"               # Ожидаемый или протестированный базовый уровень запросов в секунду.
+    peak_rps: "1000"                # Максимальная пропускная способность до срабатывания лимитера (rate-limiting).
+  resilience:
+    timeout_ms: "450"               # Максимальное время обработки до генерации исключения выполнения.
+    retry_policy: "exponential_backoff_3" # Стратегия повторных запросов при ошибке.
+    offline_capability: false       # True, если узел может продолжать выполнение логики без внешних сетевых подключений.
+
+# --- БЛОК 6: ЭВОЛЮЦИОННЫЕ И МИГРАЦИОННЫЕ МАРКЕРЫ ---
+evolution:
+  potential: "high"                 # Вероятность алгоритмических изменений. Допустимо: [low, medium, high]
+  migration_path: "v2_to_v3_schema" # Указатель на скрипт слоя трансляции для изменений базы данных или состояний.
+  domain_ontology: "cognitive_layer" # Тег классификации онтологии знаний для автономного индексирования.
+
+# --- БЛОК 7: ПОЛИТИКИ БЕЗОПАСНОСТИ И АУДИТА ---
+security_policies:
+  access_level: "private"          # Уровень доступности. Допустимо: [public, internal, private, isolated]
+  encryption: "TLS_1.3"             # Стандарт шифрования каналов, используемый для всего исходящего трафика узла.
+  audit_vector: "syslog_structured" # Целевой обработчик для логирования телеметрии и проверок доступа.
+
+# --- БЛОК 8: ЧУВСТВИТЕЛЬНОСТЬ И КЛАССИФИКАЦИЯ ДАННЫХ (Новое в v3.1) ---
+data_sensitivity:
+  contains_personal_data: true       # Наличие персональных данных пользователей.
+  contains_financial_data: false     # Наличие платежных, банковских или транзакционных данных.
+  contains_credentials: false        # Наличие сырых паролей, токенов, приватных ключей доступа.
+  contains_trade_secrets: true       # Наличие коммерческой тайны или закрытых алгоритмов ядра.
+  contains_user_generated_content: true # Наличие контента, генерируемого пользователями (UGC).
+  retention_policy: "30_days"        # Срок хранения данных в рантайме этого узла до очистки.
+  anonymization_required: true       # Требуется ли деперсонализация перед передачей во внешние контуры.
+  public_exposure_allowed: false     # Разрешена ли выдача структуры/данных узла через публичный /semantic-ping.
+
+# --- БЛОК 9: ТЕСТОВЫЕ СОГЛАШЕНИЯ И РЕГРЕССИЯ (Новое в v3.1) ---
+test_contracts:
+  required_tests:
+    - "context_assembly_integrity"
+    - "company_key_validation"
+    - "qdrant_connection_health"
+  regression_scope:                  # Зона влияния: что может сломаться в соседних модулях при изменении текущего
+    - "/BDGSite"
+    - "/Context/Assembly"
+    - "/Worker/Consultant"
+  failure_policy: "block_deployment" # Действие при падении тестов. Допустимо: [log_warning, degrade_service, block_deployment]
+  ai_review_required: true           # Требуется ли обязательный аудит кода ИИ-супервизором перед коммитом.
+
+# --- БЛОК 10: НАБЛЮДАЕМОСТЬ И ТЕЛЕМЕТРИЯ (Новое в v3.1) ---
+observability:
+  healthcheck: "/health/context-assembly" # Эндпоинт проверки операционной жизнеспособности.
+  metrics:
+    - "rps"
+    - "latency_ms"
+    - "error_rate"
+    - "qdrant_query_time"
+  alert_thresholds:
+    latency_ms: 450
+    error_rate_percent: 3
+    timeout_count_per_minute: 10
+  telemetry_target: "prometheus"     # Целевой агрегатор метрик.
+  log_level: "structured_info"       # Глубина логирования.
 ```
 
 ---
